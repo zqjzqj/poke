@@ -1,27 +1,51 @@
 package goldenFlower
 
-import "github/zqjzqj/poker/brand"
+import (
+	"fmt"
+	"github/zqjzqj/poker/brand"
+)
 
 type Player struct {
-	Brands [3]*brand.Brand
+	brands  [3]*brand.Brand
+	bLength uint8
 }
 
 func NewPlayer() *Player {
-	return &Player{Brands: [3]*brand.Brand{}}
+	return &Player{brands: [3]*brand.Brand{}}
 }
 
 func (p *Player) AddBrands(b *brand.Brand) error {
-	if p.Brands[0] == nil {
-		p.Brands[0] = b
+	if p.bLength == 3 {
+		return fmt.Errorf("not add, length already enough 3")
 	}
-	if p.Brands[0].Compare(b) < 0 {
-		p.Brands[0], b = b, p.Brands[0]
+	for k, v := range p.brands {
+		if v != nil {
+			if v.Compare(b) > 0 {
+				p.brands[k], b = b, p.brands[k]
+			}
+		} else {
+			p.brands[k] = b
+			break
+		}
 	}
-	if p.Brands[1].Compare(b) < 0 {
-		p.Brands[1], b = b, p.Brands[1]
-	}
-	if p.Brands[2].Compare(b) < 0 {
-		p.Brands[2], b = b, p.Brands[2]
-	}
+	p.bLength++
 	return nil
+}
+
+func (p *Player) ClearBrands() {
+	p.bLength = 0
+	p.brands[0] = nil
+	p.brands[1] = nil
+	p.brands[2] = nil
+}
+
+func (p Player) GetBrands() [3]*brand.Brand {
+	return p.brands
+}
+
+func (p Player) GetBrandsByPos(pos int) *brand.Brand {
+	if pos > 3 || pos < 1 {
+		return nil
+	}
+	return p.brands[pos-1]
 }
