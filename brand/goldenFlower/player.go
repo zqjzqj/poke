@@ -14,7 +14,7 @@ func NewPlayer() *Player {
 	return &Player{brands: [3]*brand.Brand{}}
 }
 
-func (p *Player) AddBrands(b *brand.Brand) error {
+func (p *Player) AddBrand(b *brand.Brand) error {
 	if p.bLength == 3 {
 		return fmt.Errorf("not add, length already enough 3")
 	}
